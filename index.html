@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Ciccio e Tuk</title>
+<meta name="description" content="Ciccio ha fame e vuole mangiarsi Tuk, il tucano che fuma. Gioca contro il computer o con un amico.">
+<meta name="theme-color" content="#2f5d2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ciccio e Tuk">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="safe" aria-hidden="true"></div>
+<canvas id="game"></canvas>
+<button id="action" class="action" aria-label="Azione"><span class="ico">⚡</span><span class="lbl">SCATTO</span></button>
+<button id="pause" class="pause" aria-label="Esci">✕</button>
+
+<!-- MENU -->
+<section id="menu" class="screen active">
+  <div class="panel wide">
+    <h1 class="logo"><span>CICCIO</span> <small>e</small> <span class="t">TUK</span></h1>
+    <canvas id="hero" class="hero"></canvas>
+    <div class="buttons">
+      <button class="btn big" data-go="cpu">🎮 Contro il computer</button>
+      <button class="btn big orange" data-go="online">📱 Con un amico</button>
+      <button class="btn" data-go="help">❓ Come si gioca</button>
+    </div>
+    <div class="toggles">
+      <button class="chip" id="tgSound">🔊 Suoni</button>
+      <button class="chip" id="tgMusic">🎵 Musica</button>
+    </div>
+    <p class="install" id="installHint"></p>
+  </div>
+</section>
+
+<!-- CONTRO IL COMPUTER -->
+<section id="cpu" class="screen">
+  <div class="panel">
+    <h2>Chi vuoi essere?</h2>
+    <div class="roles" data-group="cpuRole">
+      <button class="role sel" data-role="ciccio"><canvas data-char="ciccio"></canvas><b>CICCIO</b><span>Acchiappa il tucano prima che scappi!</span></button>
+      <button class="role" data-role="tuki"><canvas data-char="tuki"></canvas><b>TUK</b><span>Raccogli 12 sigarette senza farti mangiare!</span></button>
+    </div>
+    <h3>Difficoltà</h3>
+    <div class="seg" data-group="diff">
+      <button data-v="facile">Facile</button>
+      <button data-v="normale" class="sel">Normale</button>
+      <button data-v="difficile">Difficile</button>
+    </div>
+    <div class="buttons">
+      <button class="btn big" id="cpuGo">▶ VIA!</button>
+      <button class="btn ghost" data-go="menu">← Indietro</button>
+    </div>
+  </div>
+</section>
+
+<!-- ONLINE -->
+<section id="online" class="screen">
+  <div class="panel">
+    <h2>Gioca con un amico</h2>
+    <p class="muted">Ognuno usa il proprio telefono. Uno crea la partita e l'altro entra con il codice. Servono internet su tutti e due e il gioco aperto.</p>
+    <div class="buttons">
+      <button class="btn big orange" data-go="host">➕ Crea partita</button>
+      <button class="btn big" data-go="join">🔑 Entra con un codice</button>
+      <button class="btn ghost" data-go="menu">← Indietro</button>
+    </div>
+  </div>
+</section>
+
+<section id="host" class="screen">
+  <div class="panel">
+    <h2>Crea partita</h2>
+    <div id="hostSetup">
+      <p class="muted">Scegli il tuo personaggio. Il tuo amico avrà l'altro.</p>
+      <div class="roles" data-group="hostRole">
+        <button class="role sel" data-role="ciccio"><canvas data-char="ciccio"></canvas><b>CICCIO</b></button>
+        <button class="role" data-role="tuki"><canvas data-char="tuki"></canvas><b>TUK</b></button>
+      </div>
+      <div class="buttons"><button class="btn big orange" id="hostGo">Crea il codice</button></div>
+    </div>
+    <div id="hostWait" hidden>
+      <p class="muted">Dai questo codice al tuo amico:</p>
+      <div class="code" id="hostCode">····</div>
+      <button class="btn" id="shareCode">📤 Invia il codice</button>
+      <p class="status" id="hostStatus"><span class="spin"></span> In attesa dell'amico…</p>
+    </div>
+    <div class="buttons"><button class="btn ghost" id="hostBack">← Annulla</button></div>
+  </div>
+</section>
+
+<section id="join" class="screen">
+  <div class="panel">
+    <h2>Entra in partita</h2>
+    <p class="muted">Scrivi il codice di 4 lettere che vedi sul telefono del tuo amico.</p>
+    <input id="joinCode" class="codein" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD" inputmode="text">
+    <div class="buttons">
+      <button class="btn big" id="joinGo">Entra</button>
+    </div>
+    <p class="status" id="joinStatus"></p>
+    <div class="buttons"><button class="btn ghost" id="joinBack">← Indietro</button></div>
+  </div>
+</section>
+
+<!-- REGOLE -->
+<section id="help" class="screen">
+  <div class="panel scroll">
+    <h2>Come si gioca</h2>
+    <div class="rule"><canvas data-char="ciccio"></canvas><div><b>CICCIO</b> ha sempre fame e vuole mangiarsi il tucano. Toccalo per vincere!<br>Tieni premuto <b>⚡ SCATTO</b> per correre, ma consuma energia. Mangia <b>ciambelle, panini e pizza</b> per ricaricarti.</div></div>
+    <div class="rule"><canvas data-char="tuki"></canvas><div><b>TUK</b> è un tucano che fuma. Vince se raccoglie <b>12 sigarette</b> oppure se resiste per <b>90 secondi</b>.<br>Premi <b>💨 FUMO</b> per lasciare una nuvola: se Ciccio ci entra, tossisce e resta fermo un attimo.<br>Nei <b>cespugli</b> sei invisibile, ma il fumo della sigaretta ti può tradire!</div></div>
+    <div class="rule"><div class="emo">🕹️</div><div>Trascina il dito in un punto qualsiasi dello schermo per muoverti. Il pulsante azione è in basso a destra. Da computer si gioca con le frecce o WASD, e la barra spaziatrice per l'azione.</div></div>
+    <div class="rule"><div class="emo">📲</div><div><b>Installa il gioco:</b> su iPhone apri il menu Condividi di Safari e scegli «Aggiungi alla schermata Home». Su Android apri il menu ⋮ di Chrome e scegli «Installa app».</div></div>
+    <div class="buttons"><button class="btn ghost" data-go="menu">← Indietro</button></div>
+  </div>
+</section>
+
+<!-- FINE PARTITA -->
+<section id="end" class="screen">
+  <div class="panel">
+    <h2 id="endTitle">HAI VINTO!</h2>
+    <canvas id="endArt" class="hero small"></canvas>
+    <p id="endText" class="endtext"></p>
+    <div class="buttons">
+      <button class="btn big" id="again">🔁 Rivincita</button>
+      <button class="btn orange" id="swap">🔄 Scambia personaggio</button>
+      <button class="btn ghost" id="toMenu">🏠 Menu</button>
+    </div>
+    <p class="status" id="endStatus"></p>
+  </div>
+</section>
+
+<div id="toast" class="toast"></div>
+
+<script src="vendor/peerjs.min.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/art.js"></script>
+<script src="js/net.js"></script>
+<script src="js/game.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
