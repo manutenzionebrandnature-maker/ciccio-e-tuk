@@ -31,3 +31,6 @@ Dopo circa un minuto il gioco è online su `https://<utente>.github.io/<nome-rep
 - `js/main.js`: menu e flusso delle partite
 - `sw.js`, `manifest.webmanifest`: app installabile e uso offline
 - `vendor/peerjs.min.js`: libreria PeerJS 1.5.4 (licenza MIT, vedi `vendor/peerjs-LICENSE`)
+
+## Social Manager
+Nella cartella [`social-manager/`](social-manager/README.md) c'è un'app separata che collega Facebook, Instagram e TikTok a Claude per programmare i post e vedere le interazioni.
